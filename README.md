@@ -1,5 +1,7 @@
 # nuxt-task-management
 
+[![CircleCI](https://circleci.com/gh/16francs/task-management.svg?style=shield)](https://circleci.com/gh/16francs/task-management)
+
 ## タスク管理システム
 
 このシステムでは会社で作成する工程表を簡単に作成することを目的とする  
