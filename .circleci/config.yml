@@ -10,7 +10,9 @@ commands:
     steps:
       # Restore cache
       - restore_cache:
-          key: yarn-cache-{{ checksum "yarn.lock" }}
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
 
 jobs:
   setup:
@@ -27,9 +29,9 @@ jobs:
 
       # Keep cache
       - save_cache:
-          key: yarn-cache-{{ checksum "yarn.lock" }}
           paths:
             - "node_modules"
+          key: v1-dependencies-{{ checksum "package.json" }}
 
   test:
     executor:
