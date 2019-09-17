@@ -1,8 +1,6 @@
 export default {
   mode: 'universal',
-  /*
-   ** Headers of the page
-   */
+  srcDir: 'app',
   head: {
     title: process.env.npm_package_name || '',
     meta: [
@@ -16,36 +14,7 @@ export default {
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
-  /*
-   ** Customize the progress-bar color
-   */
   loading: { color: '#fff' },
-  /*
-   ** Global CSS
-   */
-  css: [],
-  /*
-   ** Plugins to load before mounting the App
-   */
-  plugins: [],
-  /*
-   ** Nuxt.js dev-modules
-   */
-  buildModules: [
-    // Doc: https://github.com/nuxt-community/eslint-module
-    '@nuxtjs/eslint-module'
-  ],
-  /*
-   ** Nuxt.js modules
-   */
-  modules: [],
-  /*
-   ** Build configuration
-   */
-  build: {
-    /*
-     ** You can extend webpack config here
-     */
-    extend(config, ctx) {}
-  }
+  buildModules: ['@nuxtjs/eslint-module'],
+  modules: ['@nuxtjs/axios', '@nuxtjs/pwa']
 }
