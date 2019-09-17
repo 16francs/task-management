@@ -15,30 +15,22 @@ commands:
             - v1-dependencies-
 
 jobs:
-  setup:
-    executor:
-      name: default
+  test:
+    executor: default
     steps:
       - checkout
-      - restore_cache
+      - restore_modules
 
       # Install dependencies
       - run:
           name: Install Dependencies
-          command: NODE_ENV=dev yarn
+          command: yarn
 
       # Keep cache
       - save_cache:
           paths:
             - "node_modules"
           key: v1-dependencies-{{ checksum "package.json" }}
-
-  test:
-    executor:
-      name: default
-    steps:
-      - checkout
-      - restore_modules
 
       # Run lint
       - run:
@@ -55,6 +47,6 @@ jobs:
           path: ./coverage
 
 workflows:
-  setup_and_test:
+  build_and_test:
     jobs:
       - test
