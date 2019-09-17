@@ -1,0 +1,58 @@
+version: 2.1
+
+executors:
+  default:
+    docker:
+      - image: circleci/node:12.8.1
+
+commands:
+  restore_modules:
+    steps:
+      # Restore cache
+      - restore_cache:
+          key: yarn-cache-{{ checksum "yarn.lock" }}
+
+jobs:
+  setup:
+    executor:
+      name: default
+    steps:
+      - checkout
+      - restore_cache
+
+      # Install dependencies
+      - run:
+          name: Install Dependencies
+          command: NODE_ENV=dev yarn
+
+      # Keep cache
+      - save_cache:
+          key: yarn-cache-{{ checksum "yarn.lock" }}
+          paths:
+            - "node_modules"
+
+  test:
+    executor:
+      name: default
+    steps:
+      - checkout
+      - restore_modules
+
+      # Run lint
+      - run:
+          name: Run yarn lint
+          command: yarn lint
+
+      # Run test
+      - run:
+          name: Run yarn test
+          command: yarn test:coverage
+
+      # Sore coverage
+      - store_artifacts:
+          path: ./coverage
+
+workflows:
+  setup_and_test:
+    jobs:
+      - test
