@@ -37,4 +37,4 @@ excelファイルでフォーマットが合っていれば、このシステム
 
 ### 完成イメージ
 
-![image](https://github.com/16francs/task-management/blob/master/image/image.PNG)
+![image](https://github.com/16francs/task-management/blob/master/app/image/image.PNG)
