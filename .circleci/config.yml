@@ -1,10 +1,15 @@
 version: 2.1
 
 executors:
-  default:
+  client:
     docker:
     - image: circleci/node:12.8.1
     working_directory: ~/task-management/client
+
+  api:
+    docker:
+    - image: circleci/go:1.12.9
+    working_directory: ~/task-management/api
 
 commands:
   checkout_home:
@@ -14,12 +19,13 @@ commands:
 
 jobs:
   client_test:
-    executor: default
+    executor: client
     steps:
     - checkout_home
 
     # Restore cache
     - restore_cache:
+        name: Restore node_modules cache
         keys:
         - v1-dependencies-{{ checksum "package.json" }}
         - v1-dependencies-
@@ -31,6 +37,7 @@ jobs:
 
     # Keep cache
     - save_cache:
+        name: Save node_modules cache
         paths:
         - "node_modules"
         key: v1-dependencies-{{ checksum "package.json" }}
@@ -49,7 +56,49 @@ jobs:
     - store_artifacts:
         path: ~/task-management/coverage
 
+  api_test:
+    executor: api
+    steps:
+    - checkout_home
+
+    # Check go modules cache
+    - restore_cache:
+        name: Restore go modules cache
+        keys:
+        - v1-mod-{{ .Branch }}-{{ checksum "go.mod" }}
+
+    # TODO: Database setup
+
+    # Install modules
+    - run:
+        name: Install modules
+        command: go mod download
+
+    # Save cache
+    - save_cache:
+        name: Save go modules cache
+        key: v1-mod-{{ .Branch }}-{{ checksum "go.mod" }}
+        paths:
+          - /go/pkg/mod/cache
+
+    # Run Test
+    - run:
+        name: Run test
+        command: go test -v -cover ./... -coverprofile=./coverage.out
+
+    # Create Test Result HTML
+    - run:
+        name: Create test result
+        command: go tool cover -html=./coverage.out -o ./coverage.html
+
+    # Sore coverage
+    - store_artifacts:
+        path: ./coverage.html
+
 workflows:
   build_and_test:
     jobs:
     - client_test
+    - api_test:
+        requires:
+        - client_test
