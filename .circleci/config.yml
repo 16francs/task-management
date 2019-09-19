@@ -3,50 +3,53 @@ version: 2.1
 executors:
   default:
     docker:
-      - image: circleci/node:12.8.1
+    - image: circleci/node:12.8.1
+    working_directory: ~/task-management/client
 
 commands:
-  restore_modules:
+  checkout_home:
     steps:
-      # Restore cache
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
+    - checkout:
+        path: ~/task-management
 
 jobs:
-  test:
+  client_test:
     executor: default
     steps:
-      - checkout
-      - restore_modules
+    - checkout_home
 
-      # Install dependencies
-      - run:
-          name: Install Dependencies
-          command: yarn
+    # Restore cache
+    - restore_cache:
+        keys:
+        - v1-dependencies-{{ checksum "package.json" }}
+        - v1-dependencies-
 
-      # Keep cache
-      - save_cache:
-          paths:
-            - "node_modules"
-          key: v1-dependencies-{{ checksum "package.json" }}
+    # Install dependencies
+    - run:
+        name: Install Dependencies
+        command: yarn
 
-      # Run lint
-      - run:
-          name: Run yarn lint
-          command: yarn lint
+    # Keep cache
+    - save_cache:
+        paths:
+        - "node_modules"
+        key: v1-dependencies-{{ checksum "package.json" }}
 
-      # Run test
-      - run:
-          name: Run yarn test
-          command: yarn test:coverage
+    # Run lint
+    - run:
+        name: Run yarn lint
+        command: yarn lint
 
-      # Sore coverage
-      - store_artifacts:
-          path: ./coverage
+    # Run test
+    - run:
+        name: Run yarn test
+        command: yarn test:coverage
+
+    # Sore coverage
+    - store_artifacts:
+        path: ~/task-management/coverage
 
 workflows:
   build_and_test:
     jobs:
-      - test
+    - client_test
