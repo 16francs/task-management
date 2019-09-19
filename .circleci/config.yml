@@ -97,6 +97,4 @@ workflows:
   build_and_test:
     jobs:
     - client_test
-    - api_test:
-        requires:
-        - client_test
+    - api_test
