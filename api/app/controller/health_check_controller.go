@@ -6,19 +6,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// HealthHandler - ヘルスチェック用の handler
-type HealthHandler interface {
+// HealthCheckController - ヘルスチェック用 Controller
+type HealthCheckController interface {
 	GetHealth(c *gin.Context)
 }
 
-type healthHandler struct {
+type healthCheckController struct {
 }
 
-// NewHealthCheckHandler - healthCheckHandler の生成
-func NewHealthCheckHandler() HealthHandler {
-	return &healthHandler{}
+// NewHealthCheckController - healthCheckController の生成
+func NewHealthCheckController() HealthCheckController {
+	return &healthCheckController{}
 }
 
-func (h *healthHandler) GetHealth(c *gin.Context) {
+func (h *healthCheckController) GetHealth(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
 }
