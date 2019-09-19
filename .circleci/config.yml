@@ -8,20 +8,17 @@ executors:
 
   api:
     docker:
-    - image: circleci/go:1.12.9
-    working_directory: ~/task-management/api
-
-commands:
-  checkout_home:
-    steps:
-    - checkout:
-        path: ~/task-management
+    - image: circleci/golang:1.12.9
+      environment:
+        GO111MODULE: 'on'
+    working_directory: /go/src/github.com/16frands/task-management/api
 
 jobs:
   client_test:
     executor: client
     steps:
-    - checkout_home
+    - checkout:
+        path: ~/task-management
 
     # Restore cache
     - restore_cache:
@@ -59,7 +56,8 @@ jobs:
   api_test:
     executor: api
     steps:
-    - checkout_home
+    - checkout:
+        path: /go/src/github.com/16frands/task-management
 
     # Check go modules cache
     - restore_cache:
